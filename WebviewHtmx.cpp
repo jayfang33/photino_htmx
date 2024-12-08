@@ -17,9 +17,9 @@ int CALLBACK WinMain(
 
     PhotinoInitParams param = {0};
 
-    param.StartUrl = "https://htmx.org";
-    
-    param.StartString = "hello";
+    param.StartUrl = "file://d:/index.html";
+    param.Title = "hello";
+    param.StartString = "<html>hello</html>";
 
     param.MaxWidth = 4096;
     param.MaxHeight = 4096;
@@ -39,9 +39,16 @@ int CALLBACK WinMain(
 
     param.Size = sizeof(param);
 
+
+    HINSTANCE _nativeTupe = NULL;
+    Photino_register_win32(_nativeTupe);
+
+
+
     Photino* photino = Photino_ctor(&param);
 
-
+    Photino_AddCustomSchemeName(photino, (wchar_t*)L"app");
+    
 
     Photino_WaitForExit(photino);
 

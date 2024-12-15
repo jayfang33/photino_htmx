@@ -13,6 +13,9 @@ link_directories (${WebviewLib})
 
 include_directories("wil")
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS ")
+
+
 add_executable(photino_htmx WIN32 
 
     WebviewHtmx.cpp

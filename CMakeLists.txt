@@ -34,8 +34,8 @@ if (WIN32)
         Dependencies/wintoastlib.h
         Dependencies/wintoastlib.cpp
 
-        Exports.h
-        Exports.cpp
+        #Exports.h
+        #Exports.cpp
 
     )   
 

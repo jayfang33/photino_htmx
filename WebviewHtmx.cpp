@@ -2,7 +2,7 @@
 
 //#include "Windows.h"
 #include "webview2.h"
-#include "Exports.h"
+//#include "Exports.h"
 #include "Photino.h"
 
 using namespace std;
@@ -41,17 +41,17 @@ int WINAPI WinMain(
     param.Size = sizeof(param);
 
 
+    //
     HINSTANCE _nativeTupe = GetModuleHandle(NULL);;
-    Photino_register_win32(_nativeTupe);
+    Photino::Register(_nativeTupe);
 
 
 
-    Photino* photino = Photino_ctor(&param);
+    Photino* photino = new Photino(&param);
 
-    Photino_AddCustomSchemeName(photino, (wchar_t*)L"app");
-    
+    photino->WaitForExit();
 
-    Photino_WaitForExit(photino);
+
 
 
 }

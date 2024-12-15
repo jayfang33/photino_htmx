@@ -2,6 +2,9 @@
 cmake_minimum_required(VERSION 3.8)
 set(CMAKE_CXX_STANDARD 11)
 
+project(ProjectName)
+
+
 if (WIN32)
     add_definitions("-DUNICODE")
 
@@ -48,12 +51,9 @@ Endif()
 
 if (APPLE)
 
-    add_library(mylib  
+    add_executable(photino_htmx  
 
-        #WebviewHtmx.cpp
-
-        #Exports.h
-        #Exports.cpp
+        WebviewHtmx_Mac.mm
 
         Photino.h
         Photino.Mac.mm
@@ -77,5 +77,13 @@ if (APPLE)
         Photino.Dialog.h
         Photino.Mac.Dialog.mm
     )  
+
+    target_link_libraries(photino_htmx
+         "-framework Cocoa"
+         "-framework WebKit"
+         "-framework UserNotifications"
+         "-framework Security"
+    )
+
 
 Endif()

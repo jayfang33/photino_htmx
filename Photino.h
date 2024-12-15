@@ -37,7 +37,6 @@ struct Monitor
 		int x, y;
 		int width, height;
 	} monitor, work;
-	double scale;
 };
 
 typedef void (*ACTION)();
@@ -58,12 +57,19 @@ class Photino;
 
 struct PhotinoInitParams
 {
+	wchar_t *StartStringWide;
 	char *StartString;
+	wchar_t *StartUrlWide;
 	char *StartUrl;
+	wchar_t *TitleWide;
 	char *Title;
+	wchar_t *WindowIconFileWide;
 	char *WindowIconFile;
+	wchar_t *TemporaryFilesPathWide;
 	char *TemporaryFilesPath;
+	wchar_t* UserAgentWide;
 	char * UserAgent;
+	wchar_t* BrowserControlInitParametersWide;
 	char* BrowserControlInitParameters;
 
 	Photino *ParentInstance;
@@ -77,6 +83,7 @@ struct PhotinoInitParams
 	MinimizedCallback *MinimizedHandler;
 	MovedCallback *MovedHandler;
 	WebMessageReceivedCallback *WebMessageReceivedHandler;
+	wchar_t *CustomSchemeNamesWide[16];
 	char *CustomSchemeNames[16];
 	WebResourceRequestedCallback *CustomSchemeHandler;
 
@@ -92,7 +99,6 @@ struct PhotinoInitParams
 
 	bool CenterOnInitialize;
 	bool Chromeless;
-	bool Transparent;
 	bool ContextMenuEnabled;
 	bool DevToolsEnabled;
 	bool FullScreen;
@@ -136,7 +142,6 @@ private:
 	AutoString _userAgent;
 	AutoString _browserControlInitParameters;
 
-	bool _transparentEnabled;
 	bool _devToolsEnabled;
 	bool _grantBrowserPermissions;
 	bool _mediaAutoplayEnabled;
@@ -162,8 +167,6 @@ private:
 	bool EnsureWebViewIsInstalled();
 	bool InstallWebView2();
 	void AttachWebView();
-	bool ToWide(PhotinoInitParams* params);
-	
 #elif __linux__
 	// GtkWidget* _window;
 	GtkWidget *_webview;
@@ -208,9 +211,6 @@ public:
 	HWND getHwnd();
 	void RefitContent();
 	void FocusWebView2();
-	void NotifyWebView2WindowMove();
-	AutoString ToUTF16String(AutoString source);
-	AutoString ToUTF8String(AutoString source);
 	int _minWidth;
 	int _minHeight;
 	int _maxWidth;
@@ -240,7 +240,6 @@ public:
 	void ClearBrowserAutoFill();
 	void Close();
 
-	void GetTransparentEnabled(bool *enabled);
 	void GetContextMenuEnabled(bool *enabled);
 	void GetDevToolsEnabled(bool *enabled);
 	void GetFullScreen(bool *fullScreen);
@@ -269,7 +268,6 @@ public:
 	void Restore(); // required anymore?backward compat?
 	void SendWebMessage(AutoString message);
 
-	void SetTransparentEnabled(bool enabled);
 	void SetContextMenuEnabled(bool enabled);
 	void SetDevToolsEnabled(bool enabled);
 	void SetIconFile(AutoString filename);

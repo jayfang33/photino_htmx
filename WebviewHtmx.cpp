@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int CALLBACK WinMain(
+int WINAPI WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
     LPSTR lpCmdLine,
@@ -17,9 +17,10 @@ int CALLBACK WinMain(
 
     PhotinoInitParams param = {0};
 
-    param.StartUrl = "file://d:/index.html";
+    //param.StartUrlWide = (wchar_t*)L"file://d:/index.html";
     param.Title = "hello";
     param.StartString = "<html>hello</html>";
+    param.StartStringWide = L"<html>hello</html>";
 
     param.MaxWidth = 4096;
     param.MaxHeight = 4096;
@@ -40,7 +41,7 @@ int CALLBACK WinMain(
     param.Size = sizeof(param);
 
 
-    HINSTANCE _nativeTupe = NULL;
+    HINSTANCE _nativeTupe = GetModuleHandle(NULL);;
     Photino_register_win32(_nativeTupe);
 
 

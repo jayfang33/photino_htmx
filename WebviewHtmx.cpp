@@ -7,6 +7,16 @@
 
 using namespace std;
 
+
+//void* (*WebResourceRequestedCallback)(AutoString url, int* outNumBytes, AutoString* outContentType);
+
+void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
+{
+    return NULL;
+}
+
+
+
 int WINAPI WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -18,9 +28,9 @@ int WINAPI WinMain(
     PhotinoInitParams param = {0};
 
     //param.StartUrlWide = (wchar_t*)L"file://d:/index.html";
-    param.Title = "hello";
-    param.StartString = "<html>hello</html>";
-    param.StartStringWide = L"<html>hello</html>";
+    //param.Title = "hello";
+    param.StartString = "<html> <a href=\"http://test\"> link </a></html>";
+    param.StartStringWide = L"<html> <a href=\"http://test\"> link </a></html>";
 
     param.MaxWidth = 4096;
     param.MaxHeight = 4096;
@@ -40,6 +50,8 @@ int WINAPI WinMain(
 
     param.Size = sizeof(param);
 
+    param.CustomSchemeHandler = (WebResourceRequestedCallback*) & WebResReqCb;
+
 
     //
     HINSTANCE _nativeTupe = GetModuleHandle(NULL);;
@@ -48,6 +60,8 @@ int WINAPI WinMain(
 
 
     Photino* photino = new Photino(&param);
+
+    photino->AddCustomSchemeName(L"cust");
 
     photino->WaitForExit();
 

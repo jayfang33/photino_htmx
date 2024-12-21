@@ -517,7 +517,9 @@ void Photino::SendWebMessage(AutoString message)
 void Photino::SetUserAgent(AutoString userAgent)
 {
     _userAgent = userAgent;
-    [_webview setCustomUserAgent: [NSString stringWithUTF8String: userAgent]];
+
+    //todo: why crash here?
+    //[_webview setCustomUserAgent: [NSString stringWithUTF8String: userAgent]];
 }
 
 // Set preferences with a string key and a value of any type

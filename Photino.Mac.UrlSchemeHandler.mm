@@ -26,7 +26,7 @@
     [urlSchemeTask didFinish];
 
     free(dotNetResponse);
-    free(contentType);
+    //free(contentType);
 }
 
 - (void)webView:(WKWebView *)webView stopURLSchemeTask:(id <WKURLSchemeTask>)urlSchemeTask

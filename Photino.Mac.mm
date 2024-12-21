@@ -154,11 +154,15 @@ Photino::Photino(PhotinoInitParams* initParams)
 	//copy strings from the fixed size array passed, but only if they have a value.
 	for (int i = 0; i < 16; ++i)
 	{
+         
 		if (initParams->CustomSchemeNames[i] != NULL)
 		{
 			char* name = new char[50];
 			strcpy(name, initParams->CustomSchemeNames[i]);
 			_customSchemeNames.push_back(name);
+            
+            //log
+            NSLog(@"CustomSchemeNames: %s", name);
 		}
 	}
 
@@ -239,6 +243,7 @@ Photino::Photino(PhotinoInitParams* initParams)
     // Add Custom URL Schemes to WebView Configuration
     for (auto & scheme : _customSchemeNames)
     {
+        NSLog(@"_customSchemeNames: %s", scheme);
         AddCustomScheme(scheme, _customSchemeCallback);
     }
 
@@ -832,7 +837,7 @@ void Photino::AddCustomScheme(AutoString scheme, WebResourceRequestedCallback re
     // get called from the options callback in the constructor
     UrlSchemeHandler* schemeHandler = [[[UrlSchemeHandler alloc] init] autorelease];
     schemeHandler->requestHandler = requestHandler;
-
+    
     [_webviewConfiguration
         setURLSchemeHandler: schemeHandler
         forURLScheme: [NSString stringWithUTF8String: scheme]];

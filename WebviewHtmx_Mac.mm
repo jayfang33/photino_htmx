@@ -4,6 +4,28 @@
 #include <Cocoa/Cocoa.h>
 
 
+void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
+{
+    printf("WebResReqCb: %s\n", url);
+
+
+    char *a = "<html> <a href=\"/from_cb\"> link </a></html>";
+
+//char *a = "123123";
+
+    char *buf  = new char[strlen(a) + 1];
+
+    strcpy(buf, a);
+
+    *outNumBytes =  strlen(a);
+    *outContentType = "text/html";
+
+    printf("WebResReqCb 2: %s\n", url);
+
+
+    return (void*)buf;
+}
+
 int main(int argc, char *argv[]) {
 
     // // Create the application
@@ -48,8 +70,10 @@ int main(int argc, char *argv[]) {
 
     //param.StartUrlWide = (wchar_t*)L"file://d:/index.html";
     //param.Title = "hello";
-    param.StartString = "<html>hello</html>";
+
     //param.StartStringWide = L"<html>hello</html>";
+    param.StartString = "<html> <a href=\"app://\"> link </a></html>";
+    param.StartStringWide = L"<html> <a href=\"app://\"> link </a></html>";
 
     param.MaxWidth = 4096;
     param.MaxHeight = 4096;
@@ -67,11 +91,16 @@ int main(int argc, char *argv[]) {
     param.Resizable = true;
     param.DevToolsEnabled = true;
 
+    param.CustomSchemeHandler = (WebResourceRequestedCallback*) & WebResReqCb;
+
+    param.CustomSchemeNames[0] = "app";
     param.Size = sizeof(param);
 
    
 
     Photino* photino = new Photino(&param);
+
+    //photino->AddCustomSchemeName("file");
 
     photino->WaitForExit();
 

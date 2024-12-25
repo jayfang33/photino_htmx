@@ -913,13 +913,17 @@ void Photino::AttachWebView()
 									{
 										int numBytes;
 										AutoString contentType;
-										wil::unique_cotaskmem dotNetResponse(_customSchemeCallback((AutoString)uriString.c_str(), &numBytes, &contentType));
+										//wil::unique_cotaskmem dotNetResponse(_customSchemeCallback((AutoString)uriString.c_str(), &numBytes, &contentType));
 
-										if (dotNetResponse != nullptr && contentType != nullptr)
+										BYTE* data = (BYTE*)_customSchemeCallback((AutoString)uriString.c_str(), &numBytes, &contentType);
+
+										//if (dotNetResponse != nullptr && contentType != nullptr)
+										if (data != nullptr && contentType != nullptr)
 										{
 											std::wstring contentTypeWS = contentType;
 
-											IStream* dataStream = SHCreateMemStream((BYTE*)dotNetResponse.get(), numBytes);
+											//IStream* dataStream = SHCreateMemStream((BYTE*)dotNetResponse.get(), numBytes);
+											IStream* dataStream = SHCreateMemStream((BYTE*)data, numBytes);
 											wil::com_ptr<ICoreWebView2WebResourceResponse> response;
 											_webviewEnvironment->CreateWebResourceResponse(
 												dataStream, 200, L"OK", (L"Content-Type: " + contentTypeWS).c_str(),

@@ -1,30 +1,104 @@
 
 #include "Photino.h"
 
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <Cocoa/Cocoa.h>
+
+#include <mach-o/dyld.h>
+
+std::string GetCurrentDllDirectory()
+{
+    char path[1024];
+    uint32_t size = sizeof(path);
+    _NSGetExecutablePath(path, &size);
+    std::string str = path;
+    
+    size_t found = str.find_last_of("/\\");
+    return str.substr(0, found);
+}
 
 
 void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
 {
-    printf("WebResReqCb: %s\n", url);
+    std::string uriString = url;
 
+    // check is file
+    *outContentType = NULL;
+    if (uriString.find(".html") != std::string::npos)
+    {
+        *outContentType = "text/html";
+    }
 
-    char *a = "<html> <a href=\"/from_cb\"> link </a></html>";
+    if (uriString.find(".css") != std::string::npos)
+    {
+        *outContentType = "text/css";
+    }
 
-//char *a = "123123";
+    if (uriString.find(".js") != std::string::npos)
+    {
+        *outContentType = "application/javascript";
+    }
 
-    char *buf  = new char[strlen(a) + 1];
+    if (uriString.find(".ico") != std::string::npos)
+    {
+        *outContentType = "image/x-icon";
+    }
 
-    strcpy(buf, a);
+    if (uriString.find(".wasm") != std::string::npos)
+    {
+        *outContentType = "application/wasm";
+    }
 
-    *outNumBytes =  strlen(a);
-    *outContentType = "text/html";
+    //
+    if (*outContentType == NULL)   // action
+    {
+    }
+    else
+    {
+    }
 
-    printf("WebResReqCb 2: %s\n", url);
+    std::string dir = GetCurrentDllDirectory();
 
+    printf("dir: %s\n", dir.c_str());
 
-    return (void*)buf;
+    std::string toReplace = "ms-appx://localhost";
+    std::string newStr = dir + "/wwwroot";
+
+    size_t position = uriString.find(toReplace);
+    uriString.replace(position, toReplace.length(), newStr);
+
+    printf("uriString: %s\n", uriString.c_str());
+
+    std::ifstream file(uriString, std::ios::binary | std::ios::ate);
+    int fileSize = file.tellg();
+
+    //check hasBOM
+    file.seekg(0, std::ios::beg);
+    bool hasBOM = FALSE;
+    uint8_t bom[3] = { 0 };
+    file.read((char*)bom, 3);
+    if (bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF)
+    {
+        hasBOM = TRUE;
+        fileSize -= 3;
+    }
+    else
+    {
+        file.seekg(0, std::ios::beg);
+    }
+
+    uint8_t* buf = new uint8_t[fileSize];
+    file.read(reinterpret_cast<char*>(buf), fileSize);
+
+    *outNumBytes = fileSize;
+
+    return buf;
+    
 }
+
+
 
 int main(int argc, char *argv[]) {
 
@@ -68,12 +142,12 @@ int main(int argc, char *argv[]) {
 
     PhotinoInitParams param = {0};
 
-    //param.StartUrlWide = (wchar_t*)L"file://d:/index.html";
+    param.StartUrl = "ms-appx://localhost/index.html";
     //param.Title = "hello";
 
     //param.StartStringWide = L"<html>hello</html>";
-    param.StartString = "<html> <a href=\"app://\"> link </a></html>";
-    param.StartStringWide = L"<html> <a href=\"app://\"> link </a></html>";
+    //param.StartString = "<html> <a href=\"app://\"> link </a></html>";
+    //param.StartStringWide = L"<html> <a href=\"app://   \"> link </a></html>";
 
     param.MaxWidth = 4096;
     param.MaxHeight = 4096;
@@ -93,7 +167,7 @@ int main(int argc, char *argv[]) {
 
     param.CustomSchemeHandler = (WebResourceRequestedCallback*) & WebResReqCb;
 
-    param.CustomSchemeNames[0] = "app";
+    param.CustomSchemeNames[0] = "ms-appx";
     param.Size = sizeof(param);
 
    

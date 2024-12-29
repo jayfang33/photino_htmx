@@ -4,97 +4,40 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <Cocoa/Cocoa.h>
 
-#include <mach-o/dyld.h>
 
-std::string GetCurrentDllDirectory()
-{
-    char path[1024];
-    uint32_t size = sizeof(path);
-    _NSGetExecutablePath(path, &size);
-    std::string str = path;
-    
-    size_t found = str.find_last_of("/\\");
-    return str.substr(0, found);
-}
+#include "WebReqHandle.h"
+
+
 
 
 void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
 {
-    std::string uriString = url;
+    // 
+    WebReqHandle rq = WebReqHandle();
+    rq.setUrl(url);
 
-    // check is file
-    *outContentType = NULL;
-    if (uriString.find(".html") != std::string::npos)
-    {
-        *outContentType = "text/html";
-    }
 
-    if (uriString.find(".css") != std::string::npos)
-    {
-        *outContentType = "text/css";
-    }
 
-    if (uriString.find(".js") != std::string::npos)
-    {
-        *outContentType = "application/javascript";
-    }
+    //content type
+    #ifdef __APPLE__
+    int len = rq.contentType_.length();
+    char* tmp = new char[len+1];
+    memcpy(tmp, rq.contentType_.c_str(), len);
+    tmp[len] = 0;
+    *outContentType = tmp;
+    #endif
 
-    if (uriString.find(".ico") != std::string::npos)
-    {
-        *outContentType = "image/x-icon";
-    }
 
-    if (uriString.find(".wasm") != std::string::npos)
-    {
-        *outContentType = "application/wasm";
-    }
+    
+    //data
+    uint8_t* data = new uint8_t[rq.fileSize_];
+    rq.file_.read(reinterpret_cast<char*>(data), rq.fileSize_);
 
-    //
-    if (*outContentType == NULL)   // action
-    {
-    }
-    else
-    {
-    }
+    *outNumBytes = rq.fileSize_;
 
-    std::string dir = GetCurrentDllDirectory();
 
-    printf("dir: %s\n", dir.c_str());
-
-    std::string toReplace = "ms-appx://localhost";
-    std::string newStr = dir + "/wwwroot";
-
-    size_t position = uriString.find(toReplace);
-    uriString.replace(position, toReplace.length(), newStr);
-
-    printf("uriString: %s\n", uriString.c_str());
-
-    std::ifstream file(uriString, std::ios::binary | std::ios::ate);
-    int fileSize = file.tellg();
-
-    //check hasBOM
-    file.seekg(0, std::ios::beg);
-    bool hasBOM = FALSE;
-    uint8_t bom[3] = { 0 };
-    file.read((char*)bom, 3);
-    if (bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF)
-    {
-        hasBOM = TRUE;
-        fileSize -= 3;
-    }
-    else
-    {
-        file.seekg(0, std::ios::beg);
-    }
-
-    uint8_t* buf = new uint8_t[fileSize];
-    file.read(reinterpret_cast<char*>(buf), fileSize);
-
-    *outNumBytes = fileSize;
-
-    return buf;
+    return data;
     
 }
 

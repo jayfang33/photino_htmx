@@ -78,6 +78,8 @@ set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOS
 
         Photino.Dialog.h
         Photino.Mac.Dialog.mm
+
+        WebReqHandle.h
     )  
 
     target_link_libraries(photino_htmx

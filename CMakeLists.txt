@@ -1,11 +1,11 @@
 
 cmake_minimum_required(VERSION 3.12)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 project(ProjectName)
 
 if (WIN32)
-    add_definitions("-DUNICODE")
+    add_definitions("-DUNICODE -DNOMINMAX")
 
     set ( WebviewInclude  "${CMAKE_SOURCE_DIR}/webview2/include"    )
     message (WebviewInclude = ${WebviewInclude} )

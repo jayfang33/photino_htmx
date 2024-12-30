@@ -1,11 +1,18 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include <fstream>
 
+#if defined(__APPLE__)
 #include <Cocoa/Cocoa.h>
 #include <mach-o/dyld.h>
+#endif
+
+#ifdef _WIN32
+#include "Windows.h"
+#endif
 
 #if defined(__APPLE__)
 
@@ -24,6 +31,36 @@
     }
 #endif
 
+#ifdef _WIN32
+
+    std::wstring GetCurrentDllDirectory()
+    {
+        // Buffer to store the path of the DLL directory
+        std::vector<wchar_t> buffer(MAX_PATH);
+
+        // Get the full path of the executable or DLL that is currently being executed
+        DWORD result = GetModuleFileNameW(NULL, buffer.data(), static_cast<DWORD>(buffer.size()));
+
+        if (result == 0)
+        {
+            // Error handling if the path cannot be retrieved
+            std::wcerr << L"Error getting the module file name" << std::endl;
+            return L"";
+        }
+
+        // Remove the file name from the full path to get the directory
+        std::wstring filePath(buffer.begin(), buffer.begin() + result);
+        size_t pos = filePath.find_last_of(L"\\/");
+        if (pos != std::wstring::npos)
+        {
+            return filePath.substr(0, pos);
+        }
+
+        return L"";
+    }
+#endif //  
+
+
 
 
 class WebReqHandle
@@ -35,7 +72,7 @@ public:
         #if defined(__APPLE__)
         scheme_local_ = L"ms-appx://localhost";
         #elif defined(_WIN32)
-        scheme_local_ = L"ms-appx://localhost";
+        scheme_local_ = L"http://localhost";
         #endif
     }
     
@@ -105,7 +142,7 @@ public:
        
 
         fileSize_ = file_.tellg();
-        printf("wwwroot full: %s , file size = %d \n", url_str.c_str() ,fileSize_  );
+        printf("wwwroot full: %s , file size = %zd \n", url_str.c_str() ,fileSize_  );
 
         //check hasBOM
         file_.seekg(0, std::ios::beg);

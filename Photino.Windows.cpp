@@ -929,6 +929,9 @@ void Photino::AttachWebView()
 												dataStream, 200, L"OK", (L"Content-Type: " + contentTypeWS).c_str(),
 												&response);
 											args->put_Response(response.get());
+
+											delete[] contentType;
+											delete[] data;
 										}
 									}
 								}

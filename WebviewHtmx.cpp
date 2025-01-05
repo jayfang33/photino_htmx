@@ -84,6 +84,7 @@ int WINAPI WinMain(
     Photino* photino = new Photino(&param);
 
     photino->AddCustomSchemeName(L"http");
+    photino->AddCustomSchemeName(L"ms-appx");
 
     photino->WaitForExit();
 

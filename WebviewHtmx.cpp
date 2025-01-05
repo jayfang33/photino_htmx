@@ -9,14 +9,29 @@
 //#include "Exports.h"
 #include "Photino.h"
 
+#include <string>
 #include "WebReqHandle.h"
 
 
 void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
 {
+    //for windows , http://localhost  ->  ms-appx://localhost 
+
+    std::wstring  scheme_local = L"http://localhost";
+    std::wstring  url_appx = url;
+
+    size_t position = url_appx.find(scheme_local);
+
+    //check if url has scheme_local
+    if (position == std::wstring::npos)
+    {
+        return nullptr;
+    }
+    url_appx.replace(position, scheme_local.length(), L"ms-appx://localhost");
+
     // 
     WebReqHandle rq = WebReqHandle();
-    rq.setUrl(url);
+    rq.setUrl(url_appx);
     
     // convert rq.contentType_ to wide string
     std::wstring wstr = std::wstring(rq.contentType_.begin(), rq.contentType_.end());
@@ -27,8 +42,12 @@ void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
     tmp[len] = 0;
     *outContentType = tmp;
 
-    
     //data
+    if (rq.fileSize_ == 0)
+    {
+        *outNumBytes = 0;
+        return nullptr;
+    }
     uint8_t* data = new uint8_t[rq.fileSize_];
     rq.file_.read(reinterpret_cast<char*>(data), rq.fileSize_);
 

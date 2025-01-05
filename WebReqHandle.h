@@ -69,13 +69,10 @@ class WebReqHandle
 {
 public:
 
-    WebReqHandle()
+    WebReqHandle():
+    fileSize_(0)
     {
-        #if defined(__APPLE__)
         scheme_local_ = L"ms-appx://localhost";
-        #elif defined(_WIN32)
-        scheme_local_ = L"http://localhost";
-        #endif
     }
     
     void setUrl(std::wstring url)
@@ -127,12 +124,14 @@ public:
     {
         std::wstring dir = GetCurrentDllDirectory();
 
-        
-
         std::wstring wwwroot_path = dir + L"/wwwroot";
         printf("wwwroot: %ls\n", wwwroot_path.c_str());
 
         size_t position = url_.find(scheme_local_);
+        if (position == std::wstring::npos)
+        {
+            return;
+        }
         url_.replace(position, scheme_local_.length(), wwwroot_path);
 
         //

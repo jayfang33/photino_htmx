@@ -88,6 +88,9 @@ public:
 
     void process()
     {
+        std::wstring dir = GetCurrentDllDirectory();
+        wwwroot_path_ = dir + L"/wwwroot";
+
         if (url_.find(L".html") != std::wstring::npos)
         {
             contentType_ = "text/html";
@@ -112,27 +115,27 @@ public:
         if (contentType_.length() != 0 )
         {
             process_file();
+            isFile_ = TRUE;
         }
         else
         {
             process_action();
+            isFile_ = FALSE;
         }
 
     }
 
     void process_file()
     {
-        std::wstring dir = GetCurrentDllDirectory();
 
-        std::wstring wwwroot_path = dir + L"/wwwroot";
-        printf("wwwroot: %ls\n", wwwroot_path.c_str());
+        printf("wwwroot: %ls\n", wwwroot_path_.c_str());
 
         size_t position = url_.find(scheme_local_);
         if (position == std::wstring::npos)
         {
             return;
         }
-        url_.replace(position, scheme_local_.length(), wwwroot_path);
+        url_.replace(position, scheme_local_.length(), wwwroot_path_);
 
         //
         std::string url_str(url_.begin(), url_.end());
@@ -166,20 +169,98 @@ public:
 
     void process_action()
     {
+
         printf("process_action\n");
 
+        if (url_.find(L"/main_chart") != std::wstring::npos)
+        {
 
+            // ues random number functino to generate 4 random number  to vector
+            std::vector<int> random_numbers;
+            for (int i = 0; i < 4; i++)
+            {
+                random_numbers.push_back(rand() % 10);
+            }
 
+            // print [1,2,3,4] to std::string
+            std::string y_axis = "[";
+            for (int i = 0; i < random_numbers.size(); i++)
+            {
+                y_axis += std::to_string(random_numbers[i]);
+                if (i != random_numbers.size() - 1)
+                {
+                    y_axis += ",";
+                }
+            }
+            y_axis += "];";
+
+            //x axis
+            std::string x_axis = "[1,2,3,4];";
+
+            // create a json object
+            nlohmann::json data;
+            data["x_axis"] = x_axis;
+            data["y_axis"] = y_axis;
+
+            // inja to open a template file
+            std::wstring wstemplate = wwwroot_path_+ L"/main_chart.html";
+
+            //convert wstring to string
+            std::string template_str(wstemplate.begin(), wstemplate.end());
+
+            inja::Environment env;
+            inja::Template temp = env.parse_template(template_str);
+            //  = env.render(temp, data);
+            render_ = env.render(temp, data);
+        }
 
     }
 
+    size_t getDataSize()
+    {
+        if (isFile_)
+        {
+            return fileSize_;
+        }
+        else
+        {
+            return render_.length() + 1;
+        }
+    }
+
+    uint8_t* getData()
+    {
+        if (isFile_)
+        {
+            uint8_t* buf = new uint8_t[fileSize_];
+            file_.read(reinterpret_cast<char*>(buf), fileSize_);
+            return buf;
+        }
+        else
+        {
+            uint8_t* buf = new uint8_t[render_.length() + 1];
+            memcpy(buf, render_.c_str(), render_.length());
+            buf[render_.length()] = 0;
+            return buf;
+        }
+    }
+
+
+
+    bool isFile_;
 
     std::wstring scheme_local_;
 
     std::wstring url_;
     std::string contentType_;
 
+    std::wstring wwwroot_path_;
+
+    // if file , use file_ 
+    // if action , use 
     std::ifstream file_;
+    std::string render_;
+
     //uint8_t* buf_ ;
     size_t fileSize_;
 };

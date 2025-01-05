@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plotly Sample Chart</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <div id="myDiv" style="width: 100%; height: 100%;"></div>
+    <script>
+
+        x_axis = {{ x_axis }};
+        y_axis = {{ y_axis }};
+
+        var data = [{
+            x: x_axis,
+            y: y_axis,
+            type: 'scatter'
+        }];
+
+        Plotly.newPlot('myDiv', data);
+    </script>
+</body>
+</html>

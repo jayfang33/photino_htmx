@@ -42,16 +42,15 @@ void* WebResReqCb(AutoString url, int* outNumBytes, AutoString* outContentType)
     tmp[len] = 0;
     *outContentType = tmp;
 
-    //data
-    if (rq.fileSize_ == 0)
+    // handle data
+    *outNumBytes = rq.getDataSize();
+
+    if ( *outNumBytes == 0)
     {
-        *outNumBytes = 0;
         return nullptr;
     }
-    uint8_t* data = new uint8_t[rq.fileSize_];
-    rq.file_.read(reinterpret_cast<char*>(data), rq.fileSize_);
+    uint8_t* data = rq.getData();
 
-    *outNumBytes = rq.fileSize_;
 
     return data;
     

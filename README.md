@@ -9,7 +9,8 @@ You maybe like this project if
 - want to write a cross platform desktop app by C / C++ 
 - want to use browser as UI
 - not good at frontend framework. not good at javascript.
-- then, use HTMX to control web UI
+- To use HTMX to control web UI, less javascript
+- Don't want to create TCP server as web server
 
 # Using following project code
 
@@ -40,7 +41,7 @@ The steps
 
 - handle URL from webview
 - if url is localhost file, open file in wwwroot and send to webview
-- if url is not a file, open inja template and generate html
-
+- if url is not a file, open inja template and generate html. 
+  ( No TCP server needed)
 
 

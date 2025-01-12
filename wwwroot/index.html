@@ -103,7 +103,6 @@
                 </button>
                 <div class="collapse" id="home-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a hx-get="/main_device_list" hx-target="#main" hx-swap="innerHTML" class="link-body-emphasis d-inline-flex text-decoration-none rounded">List Device</a></li>
                         <li><a hx-get="/main_chart" hx-target="#main" hx-swap="innerHTML" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Chart</a></li>
                         <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Device FOTA</a></li>
                     </ul>
@@ -135,27 +134,9 @@
 
     <main class="col-sm-10 bg-body-tertiary">
         <div class="container-fluid" id="main">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-                 id="title">
-                <h1 class="h2">Dashboard</h1>
-            </div>
-
-            <div class="row">
-
-                <p>This is the homepage of a simple admin interface which is part of a tutorial written on Themesberg</p>
-                <div id="device-list-div">
-                    <div><label>NO device</label> </div>
-                </div>
-
-
-                <button type="button" class="btn btn-primary" hx-get="/list_device" hx-target="#device-list-div" hx-swap="innerHTML">
-                    Click To Edit
-                </button>
-            </div>
-
-            <button type="button" class="btn btn-primary" hx-get="ms-appx://test" hx-target="#device-list-div" hx-swap="innerHTML">
-                Click To Edit
-            </button>
+    
+            This area will replace by htxm.
+            click  sidebar \ home \ chart to take effect
         </div>
     </main>
 

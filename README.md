@@ -5,12 +5,11 @@ This project is still a demo project.
 # Basic idea
 
 You maybe like this project if 
-- use C / C++
+- want to find Electron alternative
+- want to write a cross platform desktop app by C / C++ 
 - want to use browser as UI
 - not good at frontend framework. not good at javascript.
-- then, use HTMX to control web UI 
-
-  
+- then, use HTMX to control web UI
 
 # Using following project code
 
@@ -21,6 +20,11 @@ You maybe like this project if
 
 # How to Build
 
+
+Build Environment
+- wondows :  VS2022 
+- macOS :  Xcode
+
 The steps 
 - git clone this project
 - cd project dir
@@ -29,6 +33,7 @@ The steps
 - cmake ../
 - copy wwwroot folder to build folder
 - run photino_htmx
+ 
 
 
 # Basic flow
